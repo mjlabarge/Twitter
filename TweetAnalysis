@@ -1,0 +1,20 @@
+%% Michael Labarge CSCI 1320-105 107869863 Zagrodski Final Project
+%Purpose: Analyze twitter data along several metrics such as visualizing
+%where users are, where they are most popular, and whether people are fond
+%or not of cats and dogs.
+
+%% Task One
+% CLEAN THE DATA
+% Remove all tweets outside of continental USA including Hawaii and Alaska
+% by using the country of origin to remove foreign tweets and using the
+% city, state pair to remove tweets from Hawaii and Alaska
+% Display how many tweets remain in the dataset.
+
+
+fprintf('There are %d tweets remaining, all from the Continental US,\n all using the English language.',tweetcount)
+
+
+%% Task Two 
+%Plot tweets on a map of the USA and represent them as red dots. Use
+%Latitude and Longitude to plot them.
+% Use 'Twitter_visualization_help.m to map the dots.

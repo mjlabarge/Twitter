@@ -65,4 +65,8 @@ fprintf('There are %d tweets remaining, all from the Continental US,\n all using
 %add the result each from, causing the color to increase 
 %use function cat to make the 4th dimension and use immovie to display the animation
 
-
+%%Task 10
+% Use a sentiment dictionary (provided) to read strings and discern the sentiment of the tweet.
+% each word has a sentiment value between [-1,1] and adds its value to the sentence.
+% finds each persons sentiment towards cats or dogs and plots them on the map in red for people who like cats,
+%green for people who dont like cats, blue for poeple who like dogs and orange for poeple who dont like dogs.

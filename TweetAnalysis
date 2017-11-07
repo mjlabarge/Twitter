@@ -1,4 +1,4 @@
-%% Michael Labarge CSCI 1320-105 107869863 Zagrodski Final Project
+%% Michael Labarge and Stephanie Roberts CSCI 1320-105 107869863 Zagrodski Final Project
 %Purpose: Analyze twitter data along several metrics such as visualizing
 %where users are, where they are most popular, and whether people are fond
 %or not of cats and dogs.
@@ -18,3 +18,25 @@ fprintf('There are %d tweets remaining, all from the Continental US,\n all using
 %Plot tweets on a map of the USA and represent them as red dots. Use
 %Latitude and Longitude to plot them.
 % Use 'Twitter_visualization_help.m to map the dots.
+% Use plotm() with the coordinates of the tweets to plot all of them on the map
+
+
+%% Task Three
+%divide the tweets into 48 groups, one for each state
+% Label the states by their postal codes and attach the number of followers to the height of the
+% bar in the histogram created to compare twitter usage across states
+% Save the histogram as a .jpg file and submit this file.
+
+
+%% Task Four
+% Track a statistic of my choice (AVG # of followers per state) 
+% Sum all the followers in each state then divide by # of users
+% Display these numbers on the map as text numbers on each state using plotm.
+
+
+
+%% Task Nine
+% Create an interactive map which has latitude, longitude, and height(number of followers)
+% create a function 'Terrestrial.m' that sets the number of followers equal to the altitude of the point
+% and convert the files into .kml files with these three pieces of information. 
+% use 'kmlwritepoint'

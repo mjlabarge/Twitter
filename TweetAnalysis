@@ -40,3 +40,23 @@ fprintf('There are %d tweets remaining, all from the Continental US,\n all using
 % create a function 'Terrestrial.m' that sets the number of followers equal to the altitude of the point
 % and convert the files into .kml files with these three pieces of information. 
 % use 'kmlwritepoint'
+
+
+%% Task 5
+%Total number of tweets per state
+%save the maximum number of tweets as myMax using max function 
+%save the minimum number of tweets as myMin using min function 
+%subtract myMin from each of the states number of tweets, then divide by myMax-myMin
+%use map.mat,state_mask, state_names and usa_image to show the results on each state
+
+%% Task 6 
+%go state by state and compare all tweets to see what the most common # is
+%
+
+%% Task 7 
+
+
+%% Task 8 
+
+
+%% Task 9 

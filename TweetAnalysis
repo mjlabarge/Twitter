@@ -54,9 +54,19 @@ fprintf('There are %d tweets remaining, all from the Continental US,\n all using
 %
 
 %% Task 7 
-
+%find the user in each state binary with the highest number of followers using the max function on each bin
+%Display the user on the map using the @ symbol and their nickname and if there are ties, display the number 
+%of users who are tied next to the original user
+%Save the map as a jpg
 
 %% Task 8 
 
 
-%% Task 9 
+%% Task 10
+% Build a sentiment dictionary with words set to certain values. when the program reads over these tweets, it will add and subract values form the sentiment of the tweet.
+%Use the Sentiment value for cats and dogs to display points on the map for varying dispositions.
+%blue: positive dogs
+%red: positive cats
+%green: negative cats
+%orange: negative dogs
+%Save the resulting image as a jpg and submit.

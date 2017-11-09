@@ -24,13 +24,14 @@ plotm()
 % Label the states by their postal codes and attach the number of followers to the height of the
 % bar in the histogram created to compare twitter usage across states
 % Save the histogram as a .jpg file and submit this file.
+%Creates a histogram with all of the states total number of followers
 statehist()
 
 %% Task Four
 % Track a statistic of my choice (AVG # of followers per state) 
 % Sum all the followers in each state then divide by # of users
 % Display these numbers on the map as text numbers on each state using plotm.
-
+% Displays on a map the average number of followers per user per state
 avgfollowers()
 
 %% Task Nine
@@ -38,6 +39,9 @@ avgfollowers()
 % create a function 'Terrestrial.m' that sets the number of followers equal to the altitude of the point
 % and convert the files into .kml files with these three pieces of information. 
 % use 'kmlwritepoint'
+
+% Puts each user on the map at the location of their tweet at a height
+% correlating to the number of followers the user has
 Terrestrial()
 
 %% Task 5
@@ -47,21 +51,30 @@ Terrestrial()
 %subtract myMin from each of the states number of tweets, then divide by myMax-myMin
 %use map.mat,state_mask, state_names and usa_image to show the results via color difference
 %based on result per state
+
+%Shows a political style map in which some states appear darker based on
+%the number of tweets per state
 state_mask()
 %% Task 6 
 %find the most common hashtage for every state
 %display the hashtage over that state
 %save image as a .jpg
+
+%finds the most common hastag per state
 hash()
 %% Task 7 
 % find user with the highest number of followers in each state (if more than one have the same # 
 %put (#) after the user that comes first alphabetically  (the # being how many others there are)
 %Display the user using @ over the their respective states and save a s a jpg. 
+
+%finds the user with the max number of followers per state
 mvp()
 %% Task 8 
 %Using the results of task 5, divide the normalized date per state by the number of frames
 %add the result each from, causing the color to increase 
 %use function cat to make the 4th dimension and use immovie to display the animation
+
+%animates task five
 movie()
 %% Task 10
 % Use a sentiment dictionary (provided) to read strings and discern the sentiment of the tweet.
@@ -69,4 +82,6 @@ movie()
 % finds each persons sentiment towards cats or dogs and plots them on the map in red for people who like cats,
 %green for people who dont like cats, blue for poeple who like dogs and orange for poeple who dont like dogs.
 
+
+%shows whether people like cats and dogs or not.
 catsndogs()

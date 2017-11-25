@@ -9,30 +9,90 @@
 % by using the country of origin to remove foreign tweets and using the
 % city, state pair to remove tweets from Hawaii and Alaska
 % Display how many tweets remain in the dataset.
+[alpha,numeric,raw] = xlsread('parsed_tweets_small.csv');
+[raw,~] = removerows(raw,'ind',1);
 
-fprintf('There are %d tweets remaining, all from the Continental US,\n all using the English language.',tweetcount)
+for k = 1:numel(raw)
+  if isnan(raw{k})
+    raw{k} = '';
+  end
+end
+
+location = raw(:,[13 14]);
+lograw = cellfun('isempty',location);
+index = find(lograw==1);
+trueindex = index(index<=size(raw,1));
+[clean,~] = removerows(raw,'ind',trueindex);
+
+country = cell2mat(clean(:,13));
+state = string(clean(:,14));
+language = cell2mat(clean(:,19));
+
+langindex = find(language~='en');
+countryindex = find(country~='US');
+TF = contains(state,'HI')+contains(state,'AL');
+stateindex = find(TF==1);
+
+langcountryindex = setxor(setxor(langindex,countryindex),intersect(langindex,countryindex));
+finalindex = setxor(setxor(stateindex,langcountryindex),intersect(stateindex,langcountryindex));
+superfinalindex = finalindex(finalindex<=size(clean,1));
+[tweets,~] = removerows(clean,'ind',superfinalindex);
+
+followerslog = zeros(size(tweets(:,16),1),1);
+
+for j = 1:length(tweets(:,16))
+    if isempty(tweets{j,16})
+        followerslog(j) = 1;
+    else
+        followerslog(j) = 0;
+    end
+end
+
+
+for j = 1:length(tweets(:,16))
+    if followerslog(j)==1
+        tweets{j,16} = 0;
+    end
+end
+
+username = string(tweets(:,5));
+handle = string(tweets(:,6));
+Tweets = string(tweets(:,7));
+time = cell2mat(tweets(:,4));
+followers = cell2mat(tweets(:,16));
+following = tweets(:,17);
+latitude = cell2mat(tweets(:,11));
+longitude = cell2mat(tweets(:,12));
+newstate = string(tweets(:,14));
+tweetcount = size(tweets,1);
+
+fprintf('There are %d tweets remaining, all from the Continental US,\nall using the English language.\n',tweetcount)
 
 %% Task Two 
 %Plot tweets on a map of the USA and represent them as red dots. Use
 %Latitude and Longitude to plot them.
 % Use 'Twitter_visualization_help.m to map the dots.
 % Use plotm() with the coordinates of the tweets to plot all of them on the map
-plotm()
+
+%plotm()
 
 %% Task Three
 %divide the tweets into 48 groups, one for each state
-% Label the states by their postal codes and attach the number of followers to the height of the
+% Label the states by their postal codes and attach the number of tweets to the height of the
 % bar in the histogram created to compare twitter usage across states
 % Save the histogram as a .jpg file and submit this file.
-%Creates a histogram with all of the states total number of followers
-statehist()
+%Creates a histogram with all of the states total number of tweets
+
+
+%statehist()
 
 %% Task Four
 % Track a statistic of my choice (AVG # of followers per state) 
 % Sum all the followers in each state then divide by # of users
 % Display these numbers on the map as text numbers on each state using plotm.
 % Displays on a map the average number of followers per user per state
-avgfollowers()
+
+%avgfollowers()
 
 %% Task Nine
 % Create an interactive map which has latitude, longitude, and height(number of followers)
@@ -42,7 +102,8 @@ avgfollowers()
 
 % Puts each user on the map at the location of their tweet at a height
 % correlating to the number of followers the user has
-Terrestrial()
+
+Terrestrial(latitude,longitude,followers);
 
 %% Task 5
 %Total number of tweets per state
@@ -54,28 +115,32 @@ Terrestrial()
 
 %Shows a political style map in which some states appear darker based on
 %the number of tweets per state
-state_mask()
+
+%state_mask()
 %% Task 6 
 %find the most common hashtage for every state
 %display the hashtage over that state
 %save image as a .jpg
 
 %finds the most common hastag per state
-hash()
+
+%hash()
 %% Task 7 
 % find user with the highest number of followers in each state (if more than one have the same # 
 %put (#) after the user that comes first alphabetically  (the # being how many others there are)
 %Display the user using @ over the their respective states and save a s a jpg. 
 
 %finds the user with the max number of followers per state
-mvp()
+
+%mvp()
 %% Task 8 
 %Using the results of task 5, divide the normalized date per state by the number of frames
 %add the result each from, causing the color to increase 
 %use function cat to make the 4th dimension and use immovie to display the animation
 
 %animates task five
-movie()
+
+%movie()
 %% Task 10
 % Use a sentiment dictionary (provided) to read strings and discern the sentiment of the tweet.
 % each word has a sentiment value between [-1,1] and adds its value to the sentence.
@@ -84,4 +149,5 @@ movie()
 
 
 %shows whether people like cats and dogs or not.
-catsndogs()
+
+%catsndogs()

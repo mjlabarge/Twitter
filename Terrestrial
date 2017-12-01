@@ -1,0 +1,4 @@
+function [] = Terrestrial(latitude,longitude,followers)
+filename = 'Terrestrial.kml';
+kmlwritepoint(filename,latitude,longitude,followers);
+end

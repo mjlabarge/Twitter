@@ -9,7 +9,7 @@
 % by using the country of origin to remove foreign tweets and using the
 % city, state pair to remove tweets from Hawaii and Alaska
 % Display how many tweets remain in the dataset.
-[alpha,numeric,raw] = xlsread('parsed_tweets_small.csv');
+[alpha,numeric,raw] = xlsread('parsed_tweets.csv');
 [raw,~] = removerows(raw,'ind',1);
 
 for k = 1:numel(raw)
@@ -66,7 +66,7 @@ longitude = cell2mat(tweets(:,12));
 newstate = string(tweets(:,14));
 tweetcount = size(tweets,1);
 
-fprintf('There are %d tweets remaining, all from the Continental US,\nall using the English language.\n',tweetcount)
+fprintf('There are %d tweets remaining, all from the Continental US,\nall using the English language.\n\n',tweetcount)
 
 %% Task Two 
 %Plot tweets on a map of the USA and represent them as red dots. Use
@@ -74,7 +74,20 @@ fprintf('There are %d tweets remaining, all from the Continental US,\nall using 
 % Use 'Twitter_visualization_help.m to map the dots.
 % Use plotm() with the coordinates of the tweets to plot all of them on the map
 
-%plotm()
+%Create figure for plotting
+figure; 
+%load a map of the CONUS
+ax = usamap('conus');
+%select only states within CONUS
+states = shaperead('usastatelo', 'UseGeoCoords', true,...
+  'Selector',...
+  {@(name) ~any(strcmp(name,{'Alaska','Hawaii'})), 'Name'});
+%Show the state borders on the map with a white face
+geoshow(ax, states, 'Facecolor',[1 1 1])
+%Keep the axis on for refrence along with labels
+framem on; gridm on; mlabel on; plabel on
+plotm(latitude,longitude,'r.')
+
 
 %% Task Three
 %divide the tweets into 48 groups, one for each state
@@ -82,28 +95,41 @@ fprintf('There are %d tweets remaining, all from the Continental US,\nall using 
 % bar in the histogram created to compare twitter usage across states
 % Save the histogram as a .jpg file and submit this file.
 %Creates a histogram with all of the states total number of tweets
+statevec = {'AK','AZ','AR','CA','CO','CT','DE','FL','GA','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'};
+statevec2 = statevec;
+catstatevec = categorical({'AK','AZ','AR','CA','CO','CT','DE','FL','GA','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'});
 
+for j = 1:length(statevec)
+    QW = contains(newstate,statevec{j});
+    statevecindex = find(QW==1);
+    statevec{j} = tweets(statevecindex,:);
+end
+binlog = statevec;
+for j = 1:length(statevec)
+    binlog{j} = size(statevec{j},1);
+end
 
-%statehist()
-
+figure
+A = bar(catstatevec,cell2mat(binlog));
+saveas(A,'statehistogram.jpg')
 %% Task Four
-% Track a statistic of my choice (AVG # of followers per state) 
-% Sum all the followers in each state then divide by # of users
+% Track a statistic of my choice (# of tweets containing a word the user chooses per state) 
 % Display these numbers on the map as text numbers on each state using plotm.
 % Displays on a map the average number of followers per user per state
+keyword = input('What would you like to search for?\n','s');
+Icount = zeros(1,48);
+for j = 1:size(Tweets,1)
+    for i = 1:length(statevec2)
+        if contains(Tweets(j),keyword)==1&&contains(newstate(j),statevec2{i})==1
+            Icount(1,i) = Icount(1,i)+1;
+        end
+    end
+end
+
+figure
+task4 = bar(catstatevec,Icount);
 
 %avgfollowers()
-
-%% Task Nine
-% Create an interactive map which has latitude, longitude, and height(number of followers)
-% create a function 'Terrestrial.m' that sets the number of followers equal to the altitude of the point
-% and convert the files into .kml files with these three pieces of information. 
-% use 'kmlwritepoint'
-
-% Puts each user on the map at the location of their tweet at a height
-% correlating to the number of followers the user has
-
-Terrestrial(latitude,longitude,followers);
 
 %% Task 5
 %Total number of tweets per state
@@ -116,14 +142,45 @@ Terrestrial(latitude,longitude,followers);
 %Shows a political style map in which some states appear darker based on
 %the number of tweets per state
 
-%state_mask()
+load('map.mat');
+tweetcounter = cell2mat(binlog);
+myMax = max(tweetcounter);
+myMin = min(tweetcounter);
+jigsaw = (tweetcounter - myMin)/(myMax-myMin);
+state_mask = double(state_mask);
+for j = 1:size(state_mask,1)
+    for i = 1:size(state_mask,2)
+        if state_mask(j,i)>=3&&state_mask(j,i)<=10
+            state_mask(j,i)=state_mask(j,i)-1;
+        elseif state_mask(j,i)>=12
+            state_mask(j,i)=state_mask(j,i)-2;
+        end
+    end
+end
+usa_image = double(usa_image);
+cleanimage = double(usa_image);
+for r = 1:size(state_mask,1)
+    for c = 1:size(state_mask,2)
+        if state_mask(r,c)~=0
+            index = state_mask(r,c);
+            usa_image(r,c,2) = 1 - jigsaw(index);
+        end
+    end
+end
+figure
+imagesc(usa_image)
+imwrite(usa_image,'usa_image.jpg');
 %% Task 6 
-%find the most common hashtage for every state
+%find the most common hashtag for every state
 %display the hashtage over that state
 %save image as a .jpg
-
 %finds the most common hastag per state
-
+hash = statevec;
+for j = 1:length(statevec)
+    [~,~,~,hash{j}] = regexp(string(statevec{j}),'(\#(\w*))');
+    
+end
+hash = cellfun('mode',hash);
 %hash()
 %% Task 7 
 % find user with the highest number of followers in each state (if more than one have the same # 
@@ -140,7 +197,85 @@ Terrestrial(latitude,longitude,followers);
 
 %animates task five
 
+im1 = cleanimage;
+im2 = usa_image/59;
+im3 = 2*usa_image/59;
+im4 = 3*usa_image/59;
+im5 = 4*usa_image/59;
+im6 = 5*usa_image/59;
+im7 = 6*usa_image/59;
+im8 = 7*usa_image/59;
+im9 = 8*usa_image/59;
+im10 = 9*usa_image/59;
+im11 = 10*usa_image/59;
+im12 = 11*usa_image/59;
+im13 = 12*usa_image/59;
+im14 = 13*usa_image/59;
+im15 = 14*usa_image/59;
+im16 = 15*usa_image/59;
+im17 = 16*usa_image/59;
+im18 = 17*usa_image/59;
+im19 = 18*usa_image/59;
+im20 = 19*usa_image/59;
+im21 = 20*usa_image/59;
+im22 = 21*usa_image/59;
+im23 = 22*usa_image/59;
+im24 = 23*usa_image/59;
+im25 = 24*usa_image/59;
+im26 = 25*usa_image/59;
+im27 = 26*usa_image/59;
+im28 = 27*usa_image/59;
+im29 = 28*usa_image/59;
+im30 = 29*usa_image/59;
+im31 = 30*usa_image/59;
+im32 = 31*usa_image/59;
+im33 = 32*usa_image/59;
+im34 = 33*usa_image/59;
+im35 = 34*usa_image/59;
+im36 = 35*usa_image/59;
+im37 = 36*usa_image/59;
+im38 = 37*usa_image/59;
+im39 = 38*usa_image/59;
+im40 = 39*usa_image/59;
+im41 = 40*usa_image/59;
+im42 = 41*usa_image/59;
+im43 = 42*usa_image/59;
+im44 = 43*usa_image/59;
+im45 = 44*usa_image/59;
+im46 = 45*usa_image/59;
+im47 = 46*usa_image/59;
+im48 = 47*usa_image/59;
+im49 = 48*usa_image/59;
+im50 = 49*usa_image/59;
+im51 = 50*usa_image/59;
+im52 = 51*usa_image/59;
+im53 = 52*usa_image/59;
+im54 = 53*usa_image/59;
+im55 = 54*usa_image/59;
+im56 = 55*usa_image/59;
+im57 = 56*usa_image/59;
+im58 = 57*usa_image/59;
+im59 = 58*usa_image/59;
+im60 = usa_image;
+movie = cat(4,im1,im2,im3,im4,im5,im6,im7,im8,im9,im10,im11,im12,im13,im14,im15,im16,im17,im18,im19,im20,im21,im22,im23,im24,im25,im26,im27,im28,im29,im30,im31,im32,im33,im34,im35,im36,im37,im38,im39,im40,im41,im42,im43,im44,im45,im46,im47,im48,im49,im50,im51,im52,im53,im54,im55,im56,im57,im58,im59,im60);
+playable = immovie(movie);
+implay(playable)
+movie = VideoWriter('state_masktimelapse.avi');
+open(movie);
+writeVideo(movie,playable);
 %movie()
+
+%% Task Nine
+% Create an interactive map which has latitude, longitude, and height(number of followers)
+% create a function 'Terrestrial.m' that sets the number of followers equal to the altitude of the point
+% and convert the files into .kml files with these three pieces of information. 
+% use 'kmlwritepoint'
+
+% Puts each user on the map at the location of their tweet at a height
+% correlating to the number of followers the user has
+
+%Terrestrial(latitude,longitude,followers);
+
 %% Task 10
 % Use a sentiment dictionary (provided) to read strings and discern the sentiment of the tweet.
 % each word has a sentiment value between [-1,1] and adds its value to the sentence.
